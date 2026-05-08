@@ -179,10 +179,10 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get('DB_NAME', 'travel_companion'),
-            'USER': os.environ.get('DB_USER', 'postgres'),
-            'PASSWORD': os.environ.get('DB_PASSWORD', ''),
-            'HOST': os.environ.get('DB_HOST', 'localhost'),
+            'NAME': os.environ.get('DB_NAME', 'travel_companion_7ldf'),
+            'USER': os.environ.get('DB_USER', 'travel_companion_7ldf_user'),
+            'PASSWORD': os.environ.get('DB_PASSWORD', 'OkkQ8ZcsBTKdFfSQ7Wil2vA0iKDWxaQp'),
+            'HOST': os.environ.get('DB_HOST', 'dpg-d7urmchj2pic73c6ocbg-a'),
             'PORT': os.environ.get('DB_PORT', '5432'),
             'ATOMIC_REQUESTS': True,
             'CONN_MAX_AGE': 600,  # Connection pooling
