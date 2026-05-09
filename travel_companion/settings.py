@@ -47,12 +47,12 @@ CORS_ALLOWED_ORIGINS_DEV = [
 # For production - add Vercel frontend URLs and Render backend
 CORS_ALLOWED_ORIGINS_PROD = [
     # Vercel Frontend URLs
-    "https://travelfrontend-nu.vercel.app/"
-    "https://project-front-tan.vercel.app",
-    "https://project-front-c76lpejp6-aayushdais-projects.vercel.app",
-    "https://project-front-n8mk7f7ll-aayushdais-projects.vercel.app",
-    "https://travelcompanionsystem-git-main-aayushdais-projects.vercel.app",
-    "https://travelcompanionsystem.vercel.app",
+    "https://travelfrontend-nu.vercel.app",
+    # "https://project-front-tan.vercel.app",
+    # "https://project-front-c76lpejp6-aayushdais-projects.vercel.app",
+    # "https://project-front-n8mk7f7ll-aayushdais-projects.vercel.app",
+    # "https://travelcompanionsystem-git-main-aayushdais-projects.vercel.app",
+    # "https://travelcompanionsystem.vercel.app",
     # Render Backend (for internal API calls - WebSocket, etc)
     "https://travel-companion-api-mrmr.onrender.com",
 ]
