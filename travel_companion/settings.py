@@ -23,10 +23,13 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 # Production domains and localhost for development
 ALLOWED_HOSTS = [
     'travel-companion-api-mrmr.onrender.com',
+    'https://travel-backend-plm3.onrender.com',
     'localhost',
     '127.0.0.1',
     '.onrender.com',  # Allow all Render domains
 ]
+import dj_database_url
+from decouple import config
 # Add any additional hosts from environment variable
 if os.environ.get('ALLOWED_HOSTS'):
     ALLOWED_HOSTS.extend(os.environ.get('ALLOWED_HOSTS', '').split(','))
@@ -36,6 +39,7 @@ if os.environ.get('ALLOWED_HOSTS'):
 # ========================
 # For development
 CORS_ALLOWED_ORIGINS_DEV = [
+    
     "http://localhost:3000",
     "http://127.0.0.1:3000",
 ]
@@ -43,6 +47,7 @@ CORS_ALLOWED_ORIGINS_DEV = [
 # For production - add Vercel frontend URLs and Render backend
 CORS_ALLOWED_ORIGINS_PROD = [
     # Vercel Frontend URLs
+    "https://travelfrontend-nu.vercel.app/"
     "https://project-front-tan.vercel.app",
     "https://project-front-c76lpejp6-aayushdais-projects.vercel.app",
     "https://project-front-n8mk7f7ll-aayushdais-projects.vercel.app",
@@ -178,16 +183,18 @@ if DEBUG:
 else:
     # Production: PostgreSQL
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get('DB_NAME', 'travel_companion_7ldf'),
-            'USER': os.environ.get('DB_USER', 'travel_companion_7ldf_user'),
-            'PASSWORD': os.environ.get('DB_PASSWORD', 'OkkQ8ZcsBTKdFfSQ7Wil2vA0iKDWxaQp'),
-            'HOST': os.environ.get('DB_HOST', 'dpg-d7urmchj2pic73c6ocbg-a'),
-            'PORT': os.environ.get('DB_PORT', '5432'),
-            'ATOMIC_REQUESTS': True,
-            'CONN_MAX_AGE': 600,  # Connection pooling
-        }
+        'default':  dj_database_url.parse(config("DB_URL"))
+
+        #   {
+            # 'ENGINE': 'django.db.backends.postgresql',
+            # 'NAME': os.environ.get('DB_NAME', 'travel_companion_7ldf'),
+            # 'USER': os.environ.get('DB_USER', 'travel_companion_7ldf_user'),
+            # 'PASSWORD': os.environ.get('DB_PASSWORD', 'OkkQ8ZcsBTKdFfSQ7Wil2vA0iKDWxaQp'),
+            # 'HOST': os.environ.get('DB_HOST', 'dpg-d7urmchj2pic73c6ocbg-a'),
+            # 'PORT': os.environ.get('DB_PORT', '5432'),
+            # 'ATOMIC_REQUESTS': True,
+            # 'CONN_MAX_AGE': 600,  # Connection pooling
+        # }
     }
 
 # ========================
