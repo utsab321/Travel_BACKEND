@@ -288,9 +288,10 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 # Django 4.2+ recommended way to configure static file storage
 STORAGES = {
     'default': {
-    },
+    
         # 'BACKEND': 'django.core.files.storage.FileSystemStorage',
         'BACKEND': 'cloudinary_storage.storage.MediaCloudinaryStorage',
+},
     'staticfiles': {
         'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
     },
