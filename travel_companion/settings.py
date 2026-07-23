@@ -291,13 +291,17 @@ STORAGES = {
     
         # 'BACKEND': 'django.core.files.storage.FileSystemStorage',
         'BACKEND': 'cloudinary_storage.storage.MediaCloudinaryStorage',
-},
+    },
     'staticfiles': {
         'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
     },
 }
 
 WHITENOISE_MANIFEST_STRICT = False
+
+WHITENOISE_MIMETYPES = {
+    ".map": "application/json",
+}
 
 # ========================
 # MEDIA FILES (Uploads)

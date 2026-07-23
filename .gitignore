@@ -11,7 +11,7 @@ media/
 
 # Static files - NEVER commit collected static
 staticfiles/
-static/
+# static/
 
 # Environment
 .env
