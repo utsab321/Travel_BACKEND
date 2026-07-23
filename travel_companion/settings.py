@@ -15,6 +15,7 @@ print("Loading .env from:", env_path)
 print("DATABASE_URL =", os.getenv("DB_URL"))
 load_dotenv(env_path, verbose=True)
 
+
 # ========================
 # BASE DIR
 # ========================
@@ -294,6 +295,7 @@ STORAGES = {
         'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
     },
 }
+
 WHITENOISE_MANIFEST_STRICT = False
 
 # ========================
