@@ -15,6 +15,8 @@ class KYCListCreateView(generics.ListCreateAPIView):
     parser_classes = (MultiPartParser, FormParser)
     serializer_class = KYCProfileSerializer
 
+   
+
     def get_queryset(self):
         user = self.request.user
         if user.is_staff:
