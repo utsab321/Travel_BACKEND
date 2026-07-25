@@ -108,7 +108,7 @@ class UserLoginHistoryAdmin(admin.ModelAdmin):
 
 @admin.register(KYCProfile)
 class KYCProfileAdmin(admin.ModelAdmin):
-    list_display = ['user_display', 'status_badge', 'full_name', 'submitted_at', 'days_pending', 'action_buttons']
+    list_display = ['user_display', 'status_badge', 'full_name', 'submitted_at', 'days_pending']
     list_filter = ['status', 'submitted_at', 'nationality']
     search_fields = ['user__email', 'user__username', 'full_name', 'id_number']
     readonly_fields = ['submitted_at', 'reviewed_at', 'document_preview', 'user_email']
