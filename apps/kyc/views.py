@@ -27,8 +27,12 @@ class KYCListCreateView(generics.ListCreateAPIView):
         # Prevent multiple KYC submissions per user
         if KYCProfile.objects.filter(user=self.request.user).exists():
             raise ValidationError({"detail": "KYC profile already exists for this user."})
-        serializer.save(user=self.request.user)
-
+        try:
+            serializer.save(user=self.request.user)
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            raise
 
 class KYCDetailView(generics.RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated, IsOwnerOrStaff]
