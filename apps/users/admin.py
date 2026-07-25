@@ -280,12 +280,12 @@ class KYCProfileAdmin(admin.ModelAdmin):
 
         approve_url = reverse(
         "admin:kyc_approve",
-        args=[object.pk],
+        args=[obj.pk],
     )
 
         reject_url = reverse(
         "admin:kyc_reject",
-        args=[object.pk],
+        args=[obj.pk],
     )
 
         return format_html(
@@ -295,7 +295,7 @@ class KYCProfileAdmin(admin.ModelAdmin):
         reject_url,
     )
 
-        action_buttons.short_description = "Actions"
+    action_buttons.short_description = "Actions"
     
     def document_preview(self, obj):
         """Preview documents inline"""
