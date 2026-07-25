@@ -131,30 +131,37 @@ class KYCProfileAdmin(admin.ModelAdmin):
         ),
         ]
         return custom_urls + urls
-    
-    def approve_view(self, request, pk):
-        try:
-            obj = KYCProfile.objects.get(pk=pk)
-
-            obj.status = KYCStatus.APPROVED
-            obj.reviewed_by = request.user
-            obj.reviewed_at = timezone.now()
-            obj.save()
-
-            self.message_user(
-                request,
-                f"KYC approved for {obj.user.email}",
-                level=messages.SUCCESS,
+    def action_buttons(self, obj):
+            
+            if obj.status == KYCStatus.APPROVED:
+                return format_html(
+                '<span style="color:green;font-weight:bold;">✓ APPROVED</span>'
             )
-
-        except KYCProfile.DoesNotExist:
-            self.message_user(
-            request,
-            "KYC profile not found.",
-            level=messages.ERROR,
+    
+            if obj.status == KYCStatus.REJECTED:
+                return format_html(
+                '<span style="color:red;font-weight:bold;">✗ REJECTED</span>'
+            )
+    
+            approve_url = reverse(
+            "admin:kyc_kycprofile_approve",
+            args=[obj.pk],
         )
-
-        return redirect(request.META.get("HTTP_REFERER", "../"))
+    
+            reject_url = reverse(
+            "admin:kyc_kycprofile_reject",
+            args=[obj.pk],
+        )
+    
+            return format_html(
+            '<a class="button" style="background:#27ae60;color:white;padding:5px 10px;border-radius:4px;text-decoration:none;margin-right:5px;" href="{}">Approve</a>'
+            '<a class="button" style="background:#e74c3c;color:white;padding:5px 10px;border-radius:4px;text-decoration:none;" href="{}">Reject</a>',
+            approve_url,
+            reject_url,
+        )
+    action_buttons.short_description = "Actions"
+    
+   
 
     def approve_view(self, request, pk):
         try:
@@ -267,36 +274,7 @@ class KYCProfileAdmin(admin.ModelAdmin):
             return format_html('<span style="color: #e74c3c; font-weight: bold;">{} days ago ⚠️</span>', days)
     days_pending.short_description = "Pending Since"
     
-    def action_buttons(self, obj):
-        return "Test"
-    #     if obj.status == KYCStatus.APPROVED:
-    #         return format_html(
-    #         '<span style="color:green;font-weight:bold;">✓ APPROVED</span>'
-    #     )
-
-    #     if obj.status == KYCStatus.REJECTED:
-    #         return format_html(
-    #         '<span style="color:red;font-weight:bold;">✗ REJECTED</span>'
-    #     )
-
-    #     approve_url = reverse(
-    #     "admin:kyc_approve",
-    #     args=[obj.pk],
-    # )
-
-        # reject_url = reverse(
-        # "admin:kyc_reject",
-    #     args=[obj.pk],
-    # )
-
-    #     return format_html(
-    #     '<a class="button" style="background:#27ae60;color:white;padding:5px 10px;border-radius:4px;text-decoration:none;margin-right:5px;" href="{}">Approve</a>'
-    #     '<a class="button" style="background:#e74c3c;color:white;padding:5px 10px;border-radius:4px;text-decoration:none;" href="{}">Reject</a>',
-    #     approve_url,
-    #     reject_url,
-    # )
-
-    action_buttons.short_description = "Actions"
+    
     
     def document_preview(self, obj):
         """Preview documents inline"""
