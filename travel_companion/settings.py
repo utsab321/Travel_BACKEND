@@ -8,6 +8,7 @@ from decouple import config as env_config
 from dotenv import load_dotenv
 from pathlib import Path
 
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 env_path = BASE_DIR / ".env"
 

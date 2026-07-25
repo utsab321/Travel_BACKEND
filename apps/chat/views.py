@@ -251,16 +251,12 @@ class MessageSerializer(serializers.ModelSerializer):
     def get_profile_picture(self, obj):
         """Get sender's profile picture URL"""
         if obj.sender and obj.sender.profile_picture:
-            pic = str(obj.sender.profile_picture)
-            # If it's a relative path, prepend the media URL
-            if not pic.startswith('http'):
-                from django.conf import settings
-                # Remove leading slash if present
-                if pic.startswith('/'):
-                    return f"http://localhost:8000{pic}"
-                return f"http://localhost:8000{settings.MEDIA_URL}{pic}"
-            return pic
+            try:
+                return obj.sender.profile_picture.url
+            except ValueError:
+                return None
         return None
+        
     
     def get_isSent(self, obj):
         request = self.context.get('request')
