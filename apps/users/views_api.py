@@ -135,23 +135,17 @@ def search_users(request):
     return Response({"results": results})
 
 
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def get_user_profile(request, user_id):
-    """Get public profile details of a user by ID"""
-    try:
-        user = User.objects.get(id=user_id)
-        profile = user.userprofile
-    except (User.DoesNotExist, UserProfile.DoesNotExist):
-        return Response({"detail": "User profile not found"}, status=404)
+
     
     # Check privacy settings - only allow if:
     # 1. User's profile is public, OR
     # 2. Requester is the profile owner, OR
     # 3. Requester is a friend (accepted friend request exists)
-    if not profile.public_profile:
+def _build_profile_response(request, user, profile):
+        """Shared privacy check + serialization for get_user_profile / get_user_profile_by_username."""
+        if not profile.public_profile:
         # Profile is private
-        if not request.user.is_authenticated:
+         if not request.user.is_authenticated:
             # Not logged in - cannot view private profile
             return Response(
                 {"detail": "This profile is private. You must be a friend to view it."},
@@ -159,7 +153,7 @@ def get_user_profile(request, user_id):
             )
         
         # Check if requester is the profile owner
-        if request.user.id != user_id:
+         if request.user.id != user.id:
             # Check if they are friends (mutual accepted friend request)
             is_friend = FriendRequest.objects.filter(
                 status='accepted'
@@ -167,16 +161,16 @@ def get_user_profile(request, user_id):
                 (Q(from_user=request.user, to_user=user) | Q(from_user=user, to_user=request.user))
             ).exists()
             
-            if not is_friend:
+         if not is_friend:
                 return Response(
                     {"detail": "This profile is private. You must be a friend to view it."},
                     status=403
                 )
     
-    profile_pic = profile.profile_picture.url if profile.profile_picture else None
-    interests = [{"id": i.id, "name": i.name, "category": i.category} for i in profile.interests.all()]
+        profile_pic = profile.profile_picture.url if profile.profile_picture else None
+        interests = [{"id": i.id, "name": i.name, "category": i.category} for i in profile.interests.all()]
     
-    return Response({
+        return Response({
         "id": user.id,
         "username": user.username,
         "first_name": user.first_name,
@@ -194,8 +188,29 @@ def get_user_profile(request, user_id):
         "social_level": profile.social_level,
         "interests": interests,
     })
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_profile(request, user_id):
+    """Get public profile details of a user by ID"""
+    try:
+        user = User.objects.get(id=user_id)
+        profile = user.userprofile
+    except (User.DoesNotExist, UserProfile.DoesNotExist):
+        return Response({"detail": "User profile not found"}, status=404)
+    return _build_profile_response(request, user, profile)
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_profile_by_username(request, username):
+        """Get public profile details of a user by username"""
+        try:
+            user = User.objects.get(username=username)
+            profile = user.userprofile
+        except (User.DoesNotExist, UserProfile.DoesNotExist):
+            return Response({"detail": "User profile not found"}, status=404)
 
+        return _build_profile_response(request, user, profile)
+    
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def calculate_similarity(request, user_id):
