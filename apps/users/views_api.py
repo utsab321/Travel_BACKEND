@@ -679,6 +679,9 @@ def kyc_submission(request):
     """
     if request.method == 'POST':
         # Get data from request
+        print("CONTENT TYPE:", request.content_type)
+        print("POST:", request.POST)
+        print("FILES:", request.FILES)
         citizenship = request.POST.get('citizenship', '').strip()
         passport_no = request.POST.get('passport_no', '').strip()
         passport_expiry = request.POST.get('passport_expiry', '').strip()
