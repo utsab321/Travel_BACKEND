@@ -824,6 +824,8 @@ class KYCAdminActionView(APIView):
     """
     Admin endpoint: Approve or reject KYC submissions
     """
+    print("==== ADMIN ACTION ====")
+    
     permission_classes = [IsAuthenticated]
     
     def post(self, request, profile_id):

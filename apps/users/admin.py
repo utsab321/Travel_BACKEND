@@ -1,5 +1,9 @@
 from django.contrib import admin
 from django.utils.html import format_html
+from django.urls import path, reverse
+from django.shortcuts import redirect
+from django.contrib import messages
+from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.db.models import Q
 from .models import UserProfile, Match, UserLoginHistory, Interest, ConstraintTag
@@ -110,6 +114,95 @@ class KYCProfileAdmin(admin.ModelAdmin):
     readonly_fields = ['submitted_at', 'reviewed_at', 'document_preview', 'user_email']
     ordering = ['-reviewed_at', '-submitted_at']
     date_hierarchy = 'submitted_at'
+
+    def get_urls(self):
+        urls = super().get_urls()
+
+        custom_urls = [
+        path(
+            "<int:pk>/approve/",
+            self.admin_site.admin_view(self.approve_view),
+            name="kyc_approve",
+        ),
+             path(
+            "<int:pk>/reject/",
+            self.admin_site.admin_view(self.reject_view),
+            name="kyc_reject",
+        ),
+        ]
+        return custom_urls + urls
+    
+    def approve_view(self, request, pk):
+        try:
+            obj = KYCProfile.objects.get(pk=pk)
+
+            obj.status = KYCStatus.APPROVED
+            obj.reviewed_by = request.user
+            obj.reviewed_at = timezone.now()
+            obj.save()
+
+            self.message_user(
+                request,
+                f"KYC approved for {obj.user.email}",
+                level=messages.SUCCESS,
+            )
+
+        except KYCProfile.DoesNotExist:
+            self.message_user(
+            request,
+            "KYC profile not found.",
+            level=messages.ERROR,
+        )
+
+        return redirect(request.META.get("HTTP_REFERER", "../"))
+
+    def approve_view(self, request, pk):
+        try:
+            obj = KYCProfile.objects.get(pk=pk)
+
+            obj.status = KYCStatus.APPROVED
+            obj.reviewed_by = request.user
+            obj.reviewed_at = timezone.now()
+            obj.save()
+
+            self.message_user(
+                request,
+                f"KYC approved for {obj.user.email}",
+                level=messages.SUCCESS,
+            )
+
+        except KYCProfile.DoesNotExist:
+            self.message_user(
+            request,
+            "KYC profile not found.",
+            level=messages.ERROR,
+         )
+
+        return redirect(request.META.get("HTTP_REFERER", "../"))
+
+    def reject_view(self, request, pk):
+        try:
+            obj = KYCProfile.objects.get(pk=pk)
+
+            obj.status = KYCStatus.REJECTED
+            obj.reviewed_by = request.user
+            obj.reviewed_at = timezone.now()
+            obj.save()
+
+            self.message_user(
+                request,
+                f"KYC rejected for {obj.user.email}",
+                level=messages.WARNING,
+            )
+
+        except KYCProfile.DoesNotExist:
+            self.message_user(
+                request,
+                "KYC profile not found.",
+                level=messages.ERROR,
+            )
+
+        return redirect(request.META.get("HTTP_REFERER", "../"))
     
     def get_queryset(self, request):
         """Only show KYC profiles that have been actually submitted (have ID number)"""
@@ -175,17 +268,34 @@ class KYCProfileAdmin(admin.ModelAdmin):
     days_pending.short_description = "Pending Since"
     
     def action_buttons(self, obj):
-        """Quick action buttons to approve/reject"""
         if obj.status == KYCStatus.APPROVED:
-            return mark_safe('<span style="color: #27ae60; font-weight: bold;">✓ APPROVED</span>')
-        elif obj.status == KYCStatus.REJECTED:
-            return mark_safe('<span style="color: #c0392b;">✗ REJECTED</span>')
-        else:
-            return mark_safe(
-                '<a class="button" href="?status=approved" style="background-color: #27ae60;">Approve</a> '
-                '<a class="button" href="?status=rejected" style="background-color: #e74c3c;">Reject</a>'
-            )
-    action_buttons.short_description = "Quick Actions"
+            return format_html(
+            '<span style="color:green;font-weight:bold;">✓ APPROVED</span>'
+        )
+
+        if obj.status == KYCStatus.REJECTED:
+            return format_html(
+            '<span style="color:red;font-weight:bold;">✗ REJECTED</span>'
+        )
+
+        approve_url = reverse(
+        "admin:kyc_approve",
+        args=[object.pk],
+    )
+
+        reject_url = reverse(
+        "admin:kyc_reject",
+        args=[object.pk],
+    )
+
+        return format_html(
+        '<a class="button" style="background:#27ae60;color:white;padding:5px 10px;border-radius:4px;text-decoration:none;margin-right:5px;" href="{}">Approve</a>'
+        '<a class="button" style="background:#e74c3c;color:white;padding:5px 10px;border-radius:4px;text-decoration:none;" href="{}">Reject</a>',
+        approve_url,
+        reject_url,
+    )
+
+        action_buttons.short_description = "Actions"
     
     def document_preview(self, obj):
         """Preview documents inline"""
