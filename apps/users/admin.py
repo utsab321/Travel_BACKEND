@@ -268,32 +268,33 @@ class KYCProfileAdmin(admin.ModelAdmin):
     days_pending.short_description = "Pending Since"
     
     def action_buttons(self, obj):
-        if obj.status == KYCStatus.APPROVED:
-            return format_html(
-            '<span style="color:green;font-weight:bold;">✓ APPROVED</span>'
-        )
+        return "Test"
+    #     if obj.status == KYCStatus.APPROVED:
+    #         return format_html(
+    #         '<span style="color:green;font-weight:bold;">✓ APPROVED</span>'
+    #     )
 
-        if obj.status == KYCStatus.REJECTED:
-            return format_html(
-            '<span style="color:red;font-weight:bold;">✗ REJECTED</span>'
-        )
+    #     if obj.status == KYCStatus.REJECTED:
+    #         return format_html(
+    #         '<span style="color:red;font-weight:bold;">✗ REJECTED</span>'
+    #     )
 
-        approve_url = reverse(
-        "admin:kyc_approve",
-        args=[obj.pk],
-    )
+    #     approve_url = reverse(
+    #     "admin:kyc_approve",
+    #     args=[obj.pk],
+    # )
 
-        reject_url = reverse(
-        "admin:kyc_reject",
-        args=[obj.pk],
-    )
+        # reject_url = reverse(
+        # "admin:kyc_reject",
+    #     args=[obj.pk],
+    # )
 
-        return format_html(
-        '<a class="button" style="background:#27ae60;color:white;padding:5px 10px;border-radius:4px;text-decoration:none;margin-right:5px;" href="{}">Approve</a>'
-        '<a class="button" style="background:#e74c3c;color:white;padding:5px 10px;border-radius:4px;text-decoration:none;" href="{}">Reject</a>',
-        approve_url,
-        reject_url,
-    )
+    #     return format_html(
+    #     '<a class="button" style="background:#27ae60;color:white;padding:5px 10px;border-radius:4px;text-decoration:none;margin-right:5px;" href="{}">Approve</a>'
+    #     '<a class="button" style="background:#e74c3c;color:white;padding:5px 10px;border-radius:4px;text-decoration:none;" href="{}">Reject</a>',
+    #     approve_url,
+    #     reject_url,
+    # )
 
     action_buttons.short_description = "Actions"
     
