@@ -122,12 +122,12 @@ class KYCProfileAdmin(admin.ModelAdmin):
         path(
             "<int:pk>/approve/",
             self.admin_site.admin_view(self.approve_view),
-            name="kyc_approve",
+            name="kyc_kyc_profile_approve",
         ),
              path(
             "<int:pk>/reject/",
             self.admin_site.admin_view(self.reject_view),
-            name="kyc_reject",
+            name="kyc_kycprofile_reject",
         ),
         ]
         return custom_urls + urls
