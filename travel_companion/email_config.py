@@ -1,6 +1,6 @@
 # Email configuration for Django settings.py
 # Add these settings to your settings.py file
-
+import os
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
